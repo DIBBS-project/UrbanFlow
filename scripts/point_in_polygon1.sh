@@ -17,5 +17,5 @@ echo "point in polygon1 finished"
 IN="${PREFIX}_${CITYNAME}_tweets"
 OUT="${PREFIX}_${CITYNAME}_tweets_2"
 hadoop dfs -rmr $OUT
-hadoop jar $ROOT_DIR/jars/aggregate.jar $IN $OUT $NUMREDUCERS $YTOLERANCE $XTOLERANCE $attributes $partitionAddress
+hadoop jar $ROOT_DIR/jars/aggregate.jar $IN $OUT $NUMREDUCERS $YTOLERANCE $XTOLERANCE $attributes "${PREFIX}_${partitionAddress}"
 echo "point in polygon finished"
