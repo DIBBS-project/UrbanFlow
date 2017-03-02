@@ -6,10 +6,10 @@ ROOT_DIR="$(dirname "$CURRENT_DIR")"
 hadoop fs -rmr "${PREFIX}_tweets"
 hadoop fs -put "${ROOT_DIR}/data/tweets" "${PREFIX}_tweets"
 
-minX=-88.707599
-maxX=-87.524535
-minY=41.201577
-maxY=42.495775
+minX=${minX:-"-88.707599"}
+maxX=${maxX:-"-87.524535"}
+minY=${minY:-"41.201577"}
+maxY=${maxY:-"42.495775"}
 CITYNAME="chicago"
 
 source filter_run_pipeline.sh
