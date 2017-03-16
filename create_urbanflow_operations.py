@@ -268,6 +268,8 @@ def main():
         help='Password for user. Defaults to uppercased username.')
     parser.add_argument('-i', '--instance-id', type=int,
         help='instance_id to use (needed if run-only)')
+    parser.add_argument('-d', '--upload-data', action='store_true',
+        help='Perform data upload prior to running computation', default=False)
 
     args = parser.parse_args()
 
@@ -298,21 +300,32 @@ def main():
     do_run = args.action in {'both', 'run'}
 
     if do_deploy:
-#        operation = create_upload_operation(or_url, headers)
-#        implementation = create_upload_implementation(or_url, headers, operation['id'])
-#        instance = create_upload_instance(om_url, headers, operation['id'])
-        operation = create_filter_operation(or_url, headers)
-        implementation = create_filter_implementation(or_url, headers, operation['id'])
-        instance = create_filter_instance(om_url, headers, operation['id'])
+        if args.upload_data:
+            upload_operation = create_upload_operation(or_url, headers)
+            upload_implementation = create_upload_implementation(or_url, headers, upload_operation['id'])
+            upload_instance = create_upload_instance(om_url, headers, upload_operation['id'])
+            print(' - Created instance:')
+            pprint(upload_instance) # so the user can call it later
+
+        filter_operation = create_filter_operation(or_url, headers)
+        filter_implementation = create_filter_implementation(or_url, headers, filter_operation['id'])
+        instance = filter_instance = create_filter_instance(om_url, headers, filter_operation['id'])
 
         print(' - Created instance:')
-        pprint(instance) # so the user can call it later
+        pprint(filter_instance) # so the user can call it later
 
     else:
         if args.instance_id is None:
             print("Must provide instance id", file=sys.stderr)
             return -1
         instance = {'id': args.instance_id}
+
+    if args.upload_data:
+        execution = prepare_execution(om_url, headers, upload_instance['id'], hints)
+        # Wait for the execution to finish
+        wait_for_execution(om_url, headers, execution['id'])
+        # Download the output of the execution
+        download_output(om_url, headers, execution['id'])
 
     if do_run:
         execution = prepare_execution(om_url, headers, instance['id'], hints)
