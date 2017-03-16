@@ -18,6 +18,7 @@ import common_dibbs.auth as dibbs_auth
 
 
 RESERVATION_ID = 'REPLACE_BY_RESERVATION_ID'
+SCRIPTS_PATH = '/home/cc/scripts'
 
 
 def check_response(response, dumpfile='response-dump.log'):
@@ -67,7 +68,7 @@ def create_upload_implementation(or_url, headers, operation_id):
         "appliance": "hadoop",
         "operation": operation_id,
         "cwd": "~",
-        "script": r"/home/cc/scripts/upload_data.sh &> /usr/hadoop/ChameleonHadoopWebservice/tmp/output.txt",
+        "script": r"%s/upload_data.sh &> /usr/hadoop/ChameleonHadoopWebservice/tmp/output.txt" % SCRIPTS_PATH,
         "output_type": "file",
         "output_parameters": json.dumps(
             {"file_path": "output.txt"}
@@ -142,7 +143,7 @@ def create_filter_implementation(or_url, headers, operation_id):
         "appliance": "hadoop",
         "operation": operation_id,
         "cwd": "~",
-        "script": r"/home/cc/scripts/chicago_run_pipeline.sh &> /usr/hadoop/ChameleonHadoopWebservice/tmp/output.txt",
+        "script": r"%s/chicago_run_pipeline.sh &> /usr/hadoop/ChameleonHadoopWebservice/tmp/output.txt" % SCRIPTS_PATH,
         "output_type": "file",
         "output_parameters": json.dumps(
             {"file_path": "output.txt"}
